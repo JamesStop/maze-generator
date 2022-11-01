@@ -1,7 +1,8 @@
 const maze = document.querySelector('#maze')
 let columnMax = 5;
 let rowMax = 5;
-
+let cells = [];
+let solution = [];
 
 
 const clearMaze = () => {
@@ -12,18 +13,17 @@ const clearMaze = () => {
 
 
 
-
-
 const generateMaze = () => {
     event.preventDefault()
     const columns = document.querySelector('#columns').value;
     const rows = document.querySelector('#rows').value;
+    cells = [];
+    solution = [];
     clearMaze();
-    createGrid(columns, rows)
-    createDataPoints(columns, rows)
+    createGrid(columns, rows);
+    createDataPoints(columns, rows);
+    createStart();
 }
-
-
 
 
 const createGrid = (columns, rows) => {
@@ -35,7 +35,7 @@ const createGrid = (columns, rows) => {
             newCell.setAttribute('class', 'cell')
             let columnId = columns < 10 ? `0${k}` : `${k}`
             let rowId = rows < 10 ? `0${i}` : `${i}`
-            newCell.setAttribute('id', `${rowId}${columnId}`)
+            newCell.setAttribute('id', `_${rowId}${columnId}`)
             maze.appendChild(newCell)
         }
     }
@@ -59,12 +59,23 @@ class Cell {
 
 
 const createDataPoints = (columns, rows) => {
-    for (let i = 1; i <= columns; i++ ) {
-        for (let k = 1; k <= rows; k++) {
-            let columnId = columns < 10 ? `0${i}` : `${i}`
-            let rowId = rows < 10 ? `0${k}` : `${k}`
-            window[`_${rowId}${columnId}`] = new Cell (i, k);
+    for (let i = 1; i <= rows; i++ ) {
+        for (let k = 1; k <= columns; k++) {
+            let columnId = columns < 10 ? `0${k}` : `${k}`
+            let rowId = rows < 10 ? `0${i}` : `${i}`
+            window[`_${rowId}${columnId}`] = new Cell (k, i);
+            cells.push(`_${rowId}${columnId}`)
         }
     }
+}
 
+const createStart = () => {
+    let startNum = Math.floor(Math.random() * columnMax)
+    let startCell  = cells[startNum];
+    solution.push(startCell);
+    cells.splice(startNum, 1)
+}
+
+const createEnd = () => {
+    let endNum = Math.floor(Math.random())
 }
