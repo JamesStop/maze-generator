@@ -3,7 +3,8 @@ let columnMax = 5;
 let rowMax = 5;
 let cells = [];
 let solution = [];
-
+let currentPosition = '';
+let previousPosition = null;
 
 const clearMaze = () => {
     while (maze.firstChild) {
@@ -23,6 +24,8 @@ const generateMaze = () => {
     createGrid(columns, rows);
     createDataPoints(columns, rows);
     createStart();
+    createEnd();
+    createSolution(solution[0]);
 }
 
 
@@ -74,8 +77,69 @@ const createStart = () => {
     let startCell  = cells[startNum];
     solution.push(startCell);
     cells.splice(startNum, 1)
+    currentPosition = startCell;
+    window[startCell].solution = true;
 }
 
 const createEnd = () => {
-    let endNum = Math.floor(Math.random())
+    let endNum = Math.floor(Math.random() * columnMax) + (cells.length - columnMax);
+    let endCell  = cells[endNum];
+    solution.push(endCell);
+    cells.splice(endNum, 1);
+    window[endCell].solution = true;
+}
+
+const createSolution = (currentCell) => {
+    let options = [];
+    console.log(window[currentCell])
+    if (currentPosition == solution[solution.length - 1]) {
+        return;
+    }
+
+//Determine if can move up
+    window[currentCell].top && 
+    !window[window[currentCell].top].solution &&
+    (parseInt(window[currentCell].column) != 1 || parseInt(window[currentCell].column) != columnMax)
+    ? options.push(window[currentCell].top) : null;
+    
+//Determine if can move down
+    window[currentCell].bottom && 
+    !window[window[currentCell].bottom].solution 
+    ? options.push(window[currentCell].bottom) : null;
+
+//Determine if can move left
+    window[currentCell].left && 
+    !window[window[currentCell].left].solution 
+    // ((parseInt(window[currentCell].row) == rowMax && parseInt(window[solution[solution.length - 1]].column) < parseInt(window[currentCell].column)) ||
+    // (parseInt(window[currentCell].row) == 1 && parseInt(window[solution[0]].column) >= parseInt(window[currentCell].column)) ||
+    // (parseInt(window[currentCell].row) != 1 && parseInt(window[currentCell].row != rowMax)))
+    ? options.push(window[currentCell].left) : null;
+    
+    
+//Determine if can move right
+    window[currentCell].right && 
+    !window[window[currentCell].right].solution 
+    // ((parseInt(window[currentCell].row) == rowMax && parseInt(window[solution[solution.length - 1]].column) > parseInt(window[currentCell].column)) ||
+    // (parseInt(window[currentCell].row) == 1 && parseInt(window[solution[0]].column) <= parseInt(window[currentCell].column)) ||
+    // (parseInt(window[currentCell].row) != 1 && parseInt(window[currentCell].row != rowMax))
+    // )
+    ? options.push(window[currentCell].right) : null;
+
+
+    let next = options[Math.floor(Math.random() * options.length)];
+    window[next].solution = true;
+
+    solution.splice(-1, 0, next)
+
+
+
+    currentPosition = next;
+    previousPosition = currentCell;
+
+    console.log(options)
+    // console.log(solution)
+    
+    createSolution(currentPosition);
+
+
 }
