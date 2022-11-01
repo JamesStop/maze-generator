@@ -1,0 +1,35 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+main {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10%;
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    height: 25%;
+    width: 15%;
+    border: 1px solid black;
+}
+
+.maze-grid {
+    display: grid;
+    border: 1px solid black;
+    height: 70vmin;
+    width: 70vmin;
+}
+
+.cell {
+    border: 1px solid black;
+}
