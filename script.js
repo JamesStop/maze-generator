@@ -13,10 +13,6 @@ const clearMaze = () => {
 
 
 
-
-
-
-
 const generateMaze = () => {
     event.preventDefault()
     const columns = document.querySelector('#columns').value;
@@ -38,6 +34,9 @@ const createGrid = (columns, rows) => {
         for (let k = 1; k <= rows; k++) {
             const newCell = document.createElement("div")
             newCell.setAttribute('class', 'cell')
+            let columnId = columns < 10 ? `0${i}` : `${i}`
+            let rowId = rows < 10 ? `0${k}` : `${k}`
+            newCell.setAttribute('id', `${columnId}${rowId}`)
             maze.appendChild(newCell)
         }
     }
