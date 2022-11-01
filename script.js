@@ -15,8 +15,8 @@ const clearMaze = () => {
 
 const generateMaze = () => {
     event.preventDefault()
-    const columns = document.querySelector('#columns').value;
-    const rows = document.querySelector('#rows').value;
+    const columns = parseInt(document.querySelector('#columns').value);
+    const rows = parseInt(document.querySelector('#rows').value);
     cells = [];
     solution = [];
     clearMaze();
@@ -33,8 +33,8 @@ const createGrid = (columns, rows) => {
         for (let k = 1; k <= columns; k++) {
             const newCell = document.createElement("div")
             newCell.setAttribute('class', 'cell')
-            let columnId = columns < 10 ? `0${k}` : `${k}`
-            let rowId = rows < 10 ? `0${i}` : `${i}`
+            let columnId = k < 10 ? `0${k}` : `${k}`
+            let rowId = i < 10 ? `0${i}` : `${i}`
             newCell.setAttribute('id', `_${rowId}${columnId}`)
             maze.appendChild(newCell)
         }
@@ -61,8 +61,8 @@ class Cell {
 const createDataPoints = (columns, rows) => {
     for (let i = 1; i <= rows; i++ ) {
         for (let k = 1; k <= columns; k++) {
-            let columnId = columns < 10 ? `0${k}` : `${k}`
-            let rowId = rows < 10 ? `0${i}` : `${i}`
+            let columnId = k < 10 ? `0${k}` : `${k}`
+            let rowId = i < 10 ? `0${i}` : `${i}`
             window[`_${rowId}${columnId}`] = new Cell (k, i);
             cells.push(`_${rowId}${columnId}`)
         }
