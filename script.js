@@ -23,6 +23,7 @@ const generateMaze = () => {
     createGrid(rows, columns);
     let newMaze = new Maze(rows, columns)
     newMaze.createCells()
+    newMaze.carveMaze();
 }
 
 
@@ -57,7 +58,7 @@ class Maze {
         for (let r = 0; r < this.rows; r++) {
             let row = [];
             for (let c = 0; c < this.columns; c++) {
-                let cell = new Cell(r, c, this.gri, this.size)
+                let cell = new Cell(r, c, this.grid, this.size)
                 row.push(cell);
             }
             this.grid.push(row);
@@ -74,6 +75,7 @@ class Maze {
         start = startCell;
         let startDiv = document.querySelector(`#_00${startNum < 10 ? '0' + startNum : startNum}`)
         startDiv.innerText = 'start'
+        startDiv.style['border-top'] = 'none';
     }
     
     createEnd () {
@@ -81,42 +83,107 @@ class Maze {
         let endCell  = this.grid[this.rows - 1][endNum];
         end = endCell;
         let endDiv = document.querySelector(`#_${this.rows - 1 < 10 ? '0' + (this.rows - 1) : this.rows - 1}${endNum < 10 ? '0' + endNum : endNum}`)
-        console.log(endDiv)
         endDiv.innerText = 'end'
+        endDiv.style['border-bottom'] = 'none';
     }
+
+    breakWalls(cell1, cell2) {
+        let x = cell1.column - cell2.column;
+        let cell1Div = document.querySelector(`#_${cell1.row < 10 ? '0' + (cell1.row) : (cell1.row)}${cell1.column < 10 ? '0' + (cell1.column) : (cell1.column)}`)
+        let cell2Div = document.querySelector(`#_${cell2.row < 10 ? '0' + (cell2.row) : (cell2.row)}${cell2.column < 10 ? '0' + (cell2.column) : (cell2.column)}`)
+        if (x == 1) {
+            cell1Div.style['border-left'] = 'none';
+            cell2Div.style['border-right'] = 'none';
+        } else if (x == -1) {
+            cell1Div.style['border-right'] = 'none';
+            cell2Div.style['border-left'] = 'none';
+        }
+        let y = cell1.row - cell2.row;
+        if (y == 1) {
+            cell1Div.style['border-top'] = 'none';
+            cell2Div.style['border-bottom'] = 'none';
+        } else if (y == -1) {
+            cell1Div.style['border-bottom'] = 'none';
+            cell2Div.style['border-top'] = 'none';
+        }
+    }
+
+
+    carveMaze() {
+        currentPosition.visited = true
+
+        if (currentPosition.row == end.row && currentPosition.column == end.column) {
+            this.stack.pop();
+            currentPosition = this.stack.pop();
+        }
+
+
+        let next = currentPosition.lookForNeighbors();
+
+        if (next) {
+            next.visited = true
+            this.stack.push(currentPosition);
+            this.breakWalls(currentPosition, next);
+            currentPosition = next;
+        } else if (this.stack.length > 0) {
+            let cell = this.stack.pop();
+            currentPosition = cell;
+        }
+
+        if (this.stack.length == 0) {
+            return;
+        }
+
+        this.carveMaze()
+
+    }
+
+
 
 
 
 }
 
 class Cell {
-    constructor(row, column, grid) {
-        this.column = column < 10 ? `0${column}` : `${column}`;
-        this.row = row < 10 ? `0${row}` : `${row}`;
+    constructor(row, column, mazeGrid) {
+        this.column = column;
+        this.row = row;
         this.visited = false;
-        this.mazeGrid = grid
-
-
-
-        this.top = parseInt(this.row) == 1 ? null : parseInt(this.row) - 1 < 10 ? `_0${parseInt(this.row) - 1}${this.column}` : `_${parseInt(this.row) - 1}${this.column}`;
-        this.bottom = parseInt(this.row) == rowMax ? null : parseInt(this.row) + 1 < 10 ? `_0${parseInt(this.row) + 1}${this.column}` : `_${parseInt(this.row) + 1}${this.column}`;
-        this.left = parseInt(this.column) == 1 ? null : parseInt(this.column) - 1 < 10 ? `_${this.row}0${parseInt(this.column) - 1}` : `_${this.row}${parseInt(this.column) - 1}`;
-        this.right = parseInt(this.column) == columnMax ? null : parseInt(this.column) + 1 < 10 ? `_${this.row}0${parseInt(this.column) + 1}` : `_${this.row}${parseInt(this.column) + 1}`;
+        this.mazeGrid = mazeGrid
     }
-}
 
 
 
-const createDataPoints = (columns, rows) => {
-    for (let i = 1; i <= rows; i++ ) {
-        for (let k = 1; k <= columns; k++) {
-            let columnId = k < 10 ? `0${k}` : `${k}`
-            let rowId = i < 10 ? `0${i}` : `${i}`
-            window[`_${rowId}${columnId}`] = new Cell (k, i);
-            cells.push(`_${rowId}${columnId}`)
+    lookForNeighbors() {
+        let row = this.row
+        let col = this.column
+        let grid = this.mazeGrid;
+        let neighbors = [];
+
+        let top = row != 0 ? grid[row-1][col] : undefined;
+        let bottom = row != grid[0].length - 1 ? grid[row + 1][col] : undefined;
+        let left = col != 0 ? grid[row][col - 1] : undefined;
+        let right = col != grid.length - 1 ? grid[row][col + 1] : undefined;
+
+        if (top && !top.visited) neighbors.push(top);
+        if (bottom && !bottom.visited) neighbors.push(bottom);
+        if (left && !left.visited) neighbors.push(left);
+        if (right && !right.visited) neighbors.push(right);
+
+        if (neighbors.length != 0) {
+            let random = Math.floor(Math.random() * neighbors.length)
+            return neighbors[random]
+        } else {
+            return undefined;
         }
+
     }
+    
 }
+
+
+
+
 
 
 
