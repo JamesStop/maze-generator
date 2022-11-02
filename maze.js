@@ -8,7 +8,7 @@ class Maze {
         this.size = size;
         this.rows = rows;
         this.columns = columns;
-        this.grid = []
+        this.grid = [];
         this.stack = [];
     }
     setup() {
