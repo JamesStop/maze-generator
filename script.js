@@ -97,33 +97,25 @@ const createSolution = (currentCell) => {
     }
 
 //Determine if can move up
-    window[currentCell].top && 
-    !window[window[currentCell].top].solution &&
-    (parseInt(window[currentCell].column) != 1 || parseInt(window[currentCell].column) != columnMax)
-    ? options.push(window[currentCell].top) : null;
+    !window[currentCell].top || 
+    window[window[currentCell].top].solution
+    ? null : options.push(window[currentCell].top);
     
 //Determine if can move down
-    window[currentCell].bottom && 
-    !window[window[currentCell].bottom].solution 
-    ? options.push(window[currentCell].bottom) : null;
+    !window[currentCell].bottom || 
+    window[window[currentCell].bottom].solution 
+    ? null : options.push(window[currentCell].bottom);
 
 //Determine if can move left
-    window[currentCell].left && 
-    !window[window[currentCell].left].solution 
-    // ((parseInt(window[currentCell].row) == rowMax && parseInt(window[solution[solution.length - 1]].column) < parseInt(window[currentCell].column)) ||
-    // (parseInt(window[currentCell].row) == 1 && parseInt(window[solution[0]].column) >= parseInt(window[currentCell].column)) ||
-    // (parseInt(window[currentCell].row) != 1 && parseInt(window[currentCell].row != rowMax)))
-    ? options.push(window[currentCell].left) : null;
+    !window[currentCell].left || 
+    window[window[currentCell].left].solution 
+    ? null : options.push(window[currentCell].left);
     
     
 //Determine if can move right
-    window[currentCell].right && 
-    !window[window[currentCell].right].solution 
-    // ((parseInt(window[currentCell].row) == rowMax && parseInt(window[solution[solution.length - 1]].column) > parseInt(window[currentCell].column)) ||
-    // (parseInt(window[currentCell].row) == 1 && parseInt(window[solution[0]].column) <= parseInt(window[currentCell].column)) ||
-    // (parseInt(window[currentCell].row) != 1 && parseInt(window[currentCell].row != rowMax))
-    // )
-    ? options.push(window[currentCell].right) : null;
+    !window[currentCell].right ||
+    window[window[currentCell].right].solution 
+    ? null : options.push(window[currentCell].right);
 
 
     let next = options[Math.floor(Math.random() * options.length)];
@@ -137,9 +129,8 @@ const createSolution = (currentCell) => {
     previousPosition = currentCell;
 
     console.log(options)
-    // console.log(solution)
     
-    createSolution(currentPosition);
+    // createSolution(currentPosition);
 
 
 }
